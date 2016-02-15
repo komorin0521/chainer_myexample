@@ -29,9 +29,9 @@ N = 9
 sigma = 1
 
 #基本となるデータの種類を作成
-datatypnum = 5
+datatypenum = 10
 datatypelist = list()
-for i in range(0,datatypnum):
+for i in range(0,datatypenum):
     datatypelist.append(makerightdata(N))
 
 #ノイズを付加する
