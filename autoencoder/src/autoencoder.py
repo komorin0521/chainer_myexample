@@ -106,4 +106,4 @@ for data in testdatalist[:5]:
     print("predict data")
     print(y.data)
     print("=============================")
- 
+

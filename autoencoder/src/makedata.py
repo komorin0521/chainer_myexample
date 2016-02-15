@@ -37,7 +37,7 @@ for i in range(0,datatypnum):
 #ノイズを付加する
 datalist = list()
 for i in range(0,datanum):
-    typenum = np.random.randint(4)
+    typenum = np.random.randint(datatypenum)
     t = datatypelist[typenum]
     n = noise(t,N,sigma)
     datalist.append( [ len(datalist),t,n ])
