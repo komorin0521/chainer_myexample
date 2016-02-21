@@ -31,9 +31,9 @@ def calc_average_loss(datalist,model):
     return sum_loss/len(datalist)
 
 #入力層の数
-input_dim = 9
+input_dim = 10
 #中間層のユニット数
-n_units = 5
+n_units = 8
 
 #データをロード
 trainingdatalist = loaddata("../data/training.pk")
