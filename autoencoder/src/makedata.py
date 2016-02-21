@@ -25,21 +25,27 @@ def noise(x,N,sigma):
 datanum = 1000
 
 #生成データのビット数
-N = 9
-sigma = 1
+N = 10
+sigma = 0.25
 
 #基本となるデータの種類を作成
-datatypenum = 10
+datatypenum = 5
 datatypelist = list()
 for i in range(0,datatypenum):
     datatypelist.append(makerightdata(N))
+
+for data in  datatypelist:
+    print(data)
 
 #ノイズを付加する
 datalist = list()
 for i in range(0,datanum):
     typenum = np.random.randint(datatypenum)
     t = datatypelist[typenum]
-    n = noise(t,N,sigma)
+    if i < int(datanum*0.8):
+        n = noise(t,N,sigma)
+    else:
+        n = noise(t,N,sigma+0.1)
     datalist.append( [ len(datalist),t,n ])
 
 with open("../data/training.pk","wb") as of:
