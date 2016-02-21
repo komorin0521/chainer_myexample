@@ -81,10 +81,10 @@ for epoch in range(0,n_epoch):
 
 #結果をもとにグラフを作成
 plt.plot([ i+1 for i in range(0,len(trainresults)) ], trainresults,label="training")
-plt.plot([ i+1 for i in range(0,len(testresults)) ], testresults, label="test" )
-plt.xlabel("epoch num")
-plt.ylabel("squared loss")
-plt.legend()
+plt.plot([ i+1 for i in range(0,len(testresults)) ], testresults, label="test")
+plt.xlabel("epoch num",fontsize=24)
+plt.ylabel("squared loss",fontsize=24)
+plt.legend(fontsize=24)
 plt.savefig("../result/result.png")
 
 
