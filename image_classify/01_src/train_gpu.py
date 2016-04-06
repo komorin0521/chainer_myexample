@@ -7,7 +7,6 @@ import sys
 import os
 
 import numpy as np
-import matplotlib.pyplot as plt
 
 from PIL import Image
 
@@ -63,10 +62,10 @@ def calc_accuracy(datalist, model):
     print("======== calc accuracy ============")
     model.predictor.train = False
     rightnum = 0
-    x = np.asarray( [ data[1] for data in datalist ] )
+    x = cuda.cupy.asarray( [ data[1] for data in datalist ] )
     x = Variable(x)
     y = model.predictor(x)
-    t = np.asarray( [ data[2] for data in datalist ], dtype=np.int32 )
+    t = cuda.cupy.asarray( [ data[2] for data in datalist ], dtype=np.int32 )
     t = Variable(t)
     loss = model(x,t)
     return model.loss.data, model.accuracy.data
@@ -85,14 +84,13 @@ testlist = convert_data_to_variable_type(testdata)
 
 n_units = 1000
 
-#cudaが利用できるかどうかをチェック
-
-cuda.check_cuda_available()
 
 
 #モデルを定義
 #ネットワークおよび損失関数を定義
-model = L.Classifier(net.ImageClssifyModelParallel(32*32,n_units,5),lossfun=F.softmax_cross_entropy)
+model = L.Classifier(net.ImageClassifyModel(32*32,n_units,5))
+cuda.get_device(0).use()
+model.to_gpu()
 
 #勾配法を定義
 optimizer = optimizers.Adam()
