@@ -34,3 +34,18 @@ class ImageClassifyModelwithDropOut(chainer.Chain):
         h1 = F.dropout(F.relu(self.l1(x)),train=self.train, ratio=0.2)
         h2 = F.dropout(F.relu(self.l2(h1)),train=self.train, ratio=0.5)
         return self.l3(h2)
+
+
+class ImageClassifyUsingCNN(chainer.Chain):
+    def __init__(self):
+        super(ImageClassifyUsingCNN, self).__init__(
+                conv1 = L.Convolution2D(1, 16, 3, stride=1, pad=2),
+                conv2 = L.Convolution2D(16, 32, 3, stride=1),
+                l3 = L.Linear(1568,5)
+                )
+    def __call__(self, x):
+        h = F.max_pooling_2d(F.relu(self.conv1(x)), 2, stride=2)
+        h = F.max_pooling_2d(F.relu(self.conv2(h)), 3, stride=2)
+        return self.l3(h)
+
+
