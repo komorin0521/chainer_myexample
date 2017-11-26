@@ -1,5 +1,10 @@
+"""
+Util functions
+"""
+
 import numpy as np
 from PIL import Image
+
 
 def load_data(imagefilepath):
     """
@@ -9,15 +14,16 @@ def load_data(imagefilepath):
     """
     img_obj = Image.open(imagefilepath).convert("L")
     img = np.array(img_obj, dtype=np.float32)
-    img = img * 1.0/255
-    w,h = img.shape
-    img = img.reshape(w*h)
+    img = img * 1.0 / 255
+    width, height = img.shape
+    img = img.reshape(width * height)
     return img
- 
+
 
 def load_label(labelfilepath):
-    with open(labelfilepath, "r") as rf:
-        labellist = [ line.strip() for line in rf.readlines() ]
+    """
+    loading label
+    """
+    with open(labelfilepath, "r") as readfile:
+        labellist = [line.strip() for line in readfile.readlines()]
     return labellist
-
-
