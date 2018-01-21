@@ -2,15 +2,21 @@
 
 from __future__ import print_function
 
+# add
+import numpy as np
+
 import chainer
 import chainer.functions as F
 from chainer import Variable
+from chainer.training import StandardUpdater
+from chainer.dataset import concat_examples
 
-
-class DCGANUpdater(chainer.training.updaters.StandardUpdater):
+class DCGANUpdater(StandardUpdater):
 
     def __init__(self, *args, **kwargs):
         self.gen, self.dis = kwargs.pop('models')
+        # add
+        self.classnum = kwargs.pop('classnum')
         super(DCGANUpdater, self).__init__(*args, **kwargs)
 
     def loss_dis(self, dis, y_fake, y_real):
@@ -32,15 +38,20 @@ class DCGANUpdater(chainer.training.updaters.StandardUpdater):
         dis_optimizer = self.get_optimizer('dis')
 
         batch = self.get_iterator('main').next()
-        x_real[0], labels[1] = Variable(self.converter(batch, self.device)) / 255.
+
+        # adding from examples
+        # get batch image and label index(not onehot vector)
+        x_real, label_index = concat_examples(batch)
+        x_real = Variable(self.converter(x_real, self.device)) / 255.
+
+        batchsize = len(batch)
         xp = chainer.cuda.get_array_module(x_real.data)
 
         gen, dis = self.gen, self.dis
-        batchsize = len(batch)
 
         y_real = dis(x_real)
 
-        z = Variable(xp.asarray(gen.make_hidden(batchsize)))
+        z = Variable(xp.asarray(gen.make_hidden(batchsize, label_index)))
         x_fake = gen(z)
         y_fake = dis(x_fake)
 

@@ -15,8 +15,15 @@ def out_generated_image(gen, dis, rows, cols, seed, dst):
     def make_image(trainer):
         np.random.seed(seed)
         n_images = rows * cols
+
+        # add from example
+        indexlist = []
+        for i in range(rows):
+            for j in range(cols):
+                indexlist.append(i)
+        label_index = np.array(indexlist, dtype=np.float32)
         xp = gen.xp
-        z = Variable(xp.asarray(gen.make_hidden(n_images)))
+        z = Variable(xp.asarray(gen.make_hidden(n_images, label_index)))
         with chainer.using_config('train', False):
             x = gen(z)
         x = chainer.cuda.to_cpu(x.data)

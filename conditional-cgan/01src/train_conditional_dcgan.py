@@ -28,6 +28,9 @@ def main():
     parser.add_argument('--pairsfilepath', '-p', default='',
                         help='pairsfile written imagefilename and label index.')
 
+    parser.add_argument('--classnum', '-c', type=int, default=5,
+                        help='The number of class')
+
     parser.add_argument('--out', '-o', default='result',
                         help='Directory to output the result')
     parser.add_argument('--resume', '-r', default='',
@@ -49,7 +52,7 @@ def main():
     print('')
 
     # Set up a neural network to train
-    gen = Generator(n_hidden=args.n_hidden)
+    gen = Generator(n_hidden=args.n_hidden, classnum=args.classnum)
     dis = Discriminator()
 
     if args.gpu >= 0:
@@ -85,10 +88,13 @@ def main():
     # Set up a trainer
     updater = DCGANUpdater(
         models=(gen, dis),
+        # add
+        classnuma=args.classnum,
         iterator=train_iter,
         optimizer={
             'gen': opt_gen, 'dis': opt_dis},
         device=args.gpu)
+
     trainer = training.Trainer(updater, (args.epoch, 'epoch'), out=args.out)
 
     snapshot_interval = (args.snapshot_interval, 'iteration')
@@ -108,7 +114,7 @@ def main():
     trainer.extend(
         out_generated_image(
             gen, dis,
-            10, 10, args.seed, args.out),
+            args.classnum, 10, args.seed, args.out),
         trigger=snapshot_interval)
 
     if args.resume:

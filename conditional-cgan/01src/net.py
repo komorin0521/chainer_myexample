@@ -41,9 +41,21 @@ class Generator(chainer.Chain):
             self.bn2 = L.BatchNormalization(ch // 4)
             self.bn3 = L.BatchNormalization(ch // 8)
 
-    def make_hidden(self, batchsize):
-        return numpy.random.uniform(-1, 1, (batchsize, self.n_hidden, 1, 1))\
+    def make_hidden(self, batchsize, label_index):
+        """
+        modify from example
+        example is only make random noise, so I add the onehot_vec to noise
+        """
+
+        # adding from example
+        # converting from label index to onehot vector
+        onehot_vec = numpy.eye(self.classnum,dtype=numpy.float32)[label_index]
+        # reshape for adding make_hidden
+        onehot_vec = numpy.reshape(onehot_vec, (batchsize, self.classnum, 1, 1))
+        noise = numpy.random.uniform(-1, 1, (batchsize, self.n_hidden, 1, 1))\
             .astype(numpy.float32)
+        inputs = numpy.concatenate((noise, onehot_vec), axis=1)
+        return inputs
 
     def __call__(self, z):
         h = F.reshape(F.relu(self.bn0(self.l0(z))),
