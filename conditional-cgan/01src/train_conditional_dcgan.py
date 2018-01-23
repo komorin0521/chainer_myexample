@@ -89,7 +89,7 @@ def main():
     updater = DCGANUpdater(
         models=(gen, dis),
         # add
-        classnuma=args.classnum,
+        classnum=args.classnum,
         iterator=train_iter,
         optimizer={
             'gen': opt_gen, 'dis': opt_dis},

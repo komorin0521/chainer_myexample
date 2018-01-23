@@ -21,7 +21,7 @@ def out_generated_image(gen, dis, rows, cols, seed, dst):
         for i in range(rows):
             for j in range(cols):
                 indexlist.append(i)
-        label_index = np.array(indexlist, dtype=np.float32)
+        label_index = np.array(indexlist, dtype=np.int32)
         xp = gen.xp
         z = Variable(xp.asarray(gen.make_hidden(n_images, label_index)))
         with chainer.using_config('train', False):
