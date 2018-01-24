@@ -52,8 +52,8 @@ def main():
     print('')
 
     # Set up a neural network to train
-    gen = Generator(n_hidden=args.n_hidden, classnum=args.classnum)
-    dis = Discriminator()
+    gen = Generator(n_hidden=args.n_hidden, classnum=args.classnum, image_ch=1)
+    dis = Discriminator(image_ch=1)
 
     if args.gpu >= 0:
         # Make a specified GPU current
@@ -114,7 +114,7 @@ def main():
     trainer.extend(
         out_generated_image(
             gen, dis,
-            args.classnum, 10, args.seed, args.out),
+            args.classnum, 10, args.seed, args.out, image_ch=1),
         trigger=snapshot_interval)
 
     if args.resume:

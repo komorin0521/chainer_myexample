@@ -10,7 +10,7 @@ import chainer.cuda
 from chainer import Variable
 
 
-def out_generated_image(gen, dis, rows, cols, seed, dst):
+def out_generated_image(gen, dis, rows, cols, seed, dst, image_ch):
     @chainer.training.make_extension()
     def make_image(trainer):
         np.random.seed(seed)
@@ -30,15 +30,19 @@ def out_generated_image(gen, dis, rows, cols, seed, dst):
         np.random.seed()
 
         x = np.asarray(np.clip(x * 255, 0.0, 255.0), dtype=np.uint8)
-        _, _, H, W = x.shape
-        x = x.reshape((rows, cols, 3, H, W))
-        x = x.transpose(0, 3, 1, 4, 2)
-        x = x.reshape((rows * H, cols * W, 3))
 
-        preview_dir = '{}/preview'.format(dst)
-        preview_path = preview_dir +\
-            '/image{:0>8}.png'.format(trainer.updater.iteration)
-        if not os.path.exists(preview_dir):
-            os.makedirs(preview_dir)
-        Image.fromarray(x).save(preview_path)
+        no = 0
+        for data in x:
+            no += 1
+            # array -> PIL format
+            data = data.transpose(1, 2, 0)
+            if image_ch == 1:
+                h, w, _ = data.shape
+                data = data.reshape((h, w))
+            preview_dir = '%s/preview/%s' % (dst, trainer.updater.iteration)
+            preview_path = preview_dir +\
+                '/image{:0>8}.png'.format(no)
+            if not os.path.exists(preview_dir):
+                os.makedirs(preview_dir)
+            Image.fromarray(data).save(preview_path)
     return make_image
